@@ -83,14 +83,17 @@ const previousEpisode = (_) => {
 
 const concatEpisode = (episodeNumber) => {
   const url = getUrlInLocalStorage();
-  let urlArray = url.split("/");
-  let lastPositionArray = urlArray[urlArray.length - 1];
-  let extension = lastPositionArray.split(".")[1];
 
-  lastPositionArray = String(episodeNumber) + "." + extension;
-  urlArray[urlArray.length - 1] = lastPositionArray;
+  if (url) {
+    let urlArray = url.split("/");
+    let lastPositionArray = urlArray[urlArray.length - 1];
+    let extension = lastPositionArray.split(".")[1];
 
-  return urlArray.join("/");
+    lastPositionArray = String(episodeNumber) + "." + extension;
+    urlArray[urlArray.length - 1] = lastPositionArray;
+
+    return urlArray.join("/");
+  }
 };
 
 const setEpisodeInPlayer = (url) => {
