@@ -156,7 +156,6 @@ const onInit = (_) => {
   skipButton.addEventListener("click", skipIntro);
   animeSelect.addEventListener("change", onAnimeChange);
   episodesSelect.addEventListener("change", onEpChange);
-  renderButton.addEventListener("click", renderEpisode);
 
   setInterval(() => {
     localStorage.setItem("time", playerVideo.currentTime);
