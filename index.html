@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Style -->
+    <link rel="stylesheet" href="./style.css" />
+
+    <title>Anime Watcher 🚀🚀🚀</title>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Anime Watcher 🚀🚀🚀</h3>
+      <div class="fullscren-div">
+        <video width="320" height="240" controls id="player">
+          <source
+            src="https://pitou.goyabu.com/naruto-shippuden/98.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="row">
+        <div class="selects-grid">
+          <select name="anime" class="select-grid" id="anime"></select>
+          <select name="ep" class="select-grid" id="ep"></select>
+        </div>
+        <input
+          type="text"
+          class="url"
+          id="url"
+          placeholder="Cole a URL do anime aqui"
+        />
+        <select name="step" class="skip" id="skip-time">
+          <option value="30">30 Seg</option>
+          <option value="60">60 Seg</option>
+          <option value="90" selected>90 Seg</option>
+          <option value="120">120 Seg</option>
+        </select>
+      </div>
+      <div class="row">
+        <button class="step-intro-button" id="skipButton">Pular Intro</button>
+      </div>
+      <div class="row-buttons">
+        <button class="step-intro-button" id="previousButton">
+          ⬅️ Previous
+        </button>
+        <button class="step-intro-button" id="nextButton">Next ➡️</button>
+      </div>
+    </div>
+
+    <!-- Script -->
+    <script src="./script.js"></script>
+  </body>
+</html>
