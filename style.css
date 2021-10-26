@@ -49,6 +49,10 @@ video {
   flex-direction: column;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
 .skip {
   background: #181818;
   height: 52px;

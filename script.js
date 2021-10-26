@@ -4,6 +4,7 @@ const playerVideo = document.getElementById("player");
 const nextButton = document.getElementById("nextButton");
 const previousButton = document.getElementById("previousButton");
 const skipButton = document.getElementById("skipButton");
+const playButton = document.getElementById("playButton");
 const animeSelect = document.getElementById("anime");
 let timeToSkip = document.getElementById("skip-time");
 let fullscreenContainer = document.getElementById("fullscren-div");
@@ -19,7 +20,7 @@ const animes = [
   {
     anime: "One Piece",
     episodes: Array.from(Array(1000).keys()),
-    url: "https://pitou.goyabu.com/naruto-shippuden/02.mp4",
+    url: "https://pitou.goyabu.com/one-piece/01.mp4",
   },
 ];
 
@@ -64,7 +65,9 @@ const nextEpisode = (_) => {
 
   if (currentEpisode) {
     currentEpisode++;
-    const newUrl = concatEpisode(currentEpisode);
+    const currentEpisodeFormated =
+      currentEpisode < 10 ? "0" + String(currentEpisode) : currentEpisode;
+    const newUrl = concatEpisode(currentEpisodeFormated);
     setEpisodeInPlayer(newUrl);
     setUrlInLocalStorage(newUrl);
   }
@@ -75,6 +78,8 @@ const previousEpisode = (_) => {
 
   if (currentEpisode) {
     currentEpisode--;
+    const currentEpisodeFormated =
+      currentEpisode < 10 ? "0" + String(currentEpisode) : currentEpisode;
     const newUrl = concatEpisode(currentEpisode);
     setEpisodeInPlayer(newUrl);
     setUrlInLocalStorage(newUrl);
@@ -127,18 +132,43 @@ const createOptions = (_) => {
 
 const onAnimeChange = () => {
   const index = animes.findIndex((i) => i.anime === animeSelect.value);
+  const anime = animes[index];
 
-  animes[index].episodes.forEach((ep, index) => {
+  anime.episodes.forEach((ep, index) => {
     const opt = document.createElement("option");
     opt.innerText = ++index;
     episodesSelect.appendChild(opt);
   });
+
+  setEpisodeInPlayer(anime.url);
+  setUrlInLocalStorage(anime.url);
+  playerVideo.onplay = true;
 };
 
 const onEpChange = () => {
-  const newUrl = concatEpisode(Number(episodesSelect.value));
+  const currentEpisodeFormated =
+    eval(episodesSelect.value) < 10
+      ? "0" + String(episodesSelect.value)
+      : episodesSelect.value;
+  const newUrl = concatEpisode(currentEpisodeFormated);
   setEpisodeInPlayer(newUrl);
   setUrlInLocalStorage(newUrl);
+  playerVideo.onplay = true;
+};
+
+const handleOnInitInput = () => {
+  episodesSelect.value = getEpisode();
+
+  const animeCurrentPlaying = getUrlInLocalStorage().split("/")[3];
+  const index = animes.findIndex((x) => x.url.includes(animeCurrentPlaying));
+  const nameAnime = animes[index].anime;
+
+  animesSelect.value = nameAnime;
+};
+
+const playVideo = () => {
+  setEpisodeInPlayer(urlInput.value);
+  setUrlInLocalStorage(urlInput.value);
   playerVideo.onplay = true;
 };
 
@@ -152,11 +182,13 @@ const onInit = (_) => {
   }
 
   createOptions();
+  handleOnInitInput();
   urlInput.addEventListener("keyup", handleEnterKey);
   document.body.addEventListener("keyup", handleEnterKey);
   nextButton.addEventListener("click", nextEpisode);
   previousButton.addEventListener("click", previousEpisode);
   skipButton.addEventListener("click", skipIntro);
+  playButton.addEventListener("click", playVideo);
   animeSelect.addEventListener("change", onAnimeChange);
   episodesSelect.addEventListener("change", onEpChange);
 
