@@ -159,11 +159,15 @@ const onEpChange = () => {
 const handleOnInitInput = () => {
   episodesSelect.value = getEpisode();
 
-  const animeCurrentPlaying = getUrlInLocalStorage().split("/")[3];
-  const index = animes.findIndex((x) => x.url.includes(animeCurrentPlaying));
-  const nameAnime = animes[index].anime;
+  const animeCurrentPlayingUrl = getUrlInLocalStorage();
 
-  animesSelect.value = nameAnime;
+  if (animeCurrentPlayingUrl !== null) {
+    const currentAnime = animeCurrentPlayingUrl.split("/")[3];
+    const index = animes.findIndex((x) => x.url.includes(currentAnime));
+    const nameAnime = animes[index].anime;
+
+    animesSelect.value = nameAnime;
+  }
 };
 
 const playVideo = () => {
