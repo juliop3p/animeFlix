@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.back {
+  width: fit-content;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-bottom: 24px;
+  font-weight: bold;
+  background-color: #7159c1;
+  color: #fff;
+}
+
+.container .player {
+  width: 100%;
+  height: auto;
+  background-color: rgba(104, 101, 101, 0.082);
+  padding: 2px;
+  margin: 24px 0 16px;
+}
+
+.container .additional-controls button {
+  background-color: #7159c1;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+}

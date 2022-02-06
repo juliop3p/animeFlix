@@ -1,0 +1,21 @@
+.container-cards .animes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.container-cards .animes .anime {
+  width: 250px;
+  height: 150px;
+  margin: 8px 8px;
+  list-style: none;
+}
+
+.container-cards .animes .anime img {
+  width: 250px;
+  height: 150px;
+  border-radius: 4px;
+  cursor: pointer;
+}
