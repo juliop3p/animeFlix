@@ -2,13 +2,12 @@ const player = document.querySelector(".player");
 const selectEp = document.getElementById("eps");
 const animeName = document.querySelector(".anime-name");
 const searchParams = new URLSearchParams(window.location.search);
+
 let id;
 let index;
 let anime;
 let url;
 let currentEp;
-
-// Helper Functions
 
 const urlBuilder = (anime) => {
   const { url, videoType, state } = anime;
@@ -26,8 +25,6 @@ const sanitazeEp = (ep) => {
 
   return sanatizedEp;
 };
-
-// End Helper Functions
 
 const validateQueryParam = () => {
   if (searchParams.has("id")) {
@@ -96,6 +93,23 @@ const onNextOrPrevEp = (action) => {
   }
 };
 
+const saveCurrentStatus = () => {
+  console.log("SAVING CURRENT VIDEO TIME");
+  anime.state.currentTime = player.currentTime;
+  data[index] = anime;
+  saveDataInLocalStorage();
+  document.location.href = "/";
+};
+
+const goBack = () => {
+  saveCurrentStatus();
+  document.location.href = "/";
+};
+
+player.addEventListener("ended", () => {
+  onNextOrPrevEp("next");
+});
+
 const onInitAnime = () => {
   validateQueryParam();
 
@@ -109,10 +123,7 @@ const onInitAnime = () => {
   updateSelect();
 
   setInterval(() => {
-    console.log("SAVING CURRENT VIDEO TIME");
-    anime.state.currentTime = player.currentTime;
-    data[index] = anime;
-    saveDataInLocalStorage();
+    saveCurrentStatus();
   }, 60000);
 };
 

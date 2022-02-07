@@ -1,6 +1,16 @@
 .container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  padding: 0px 24px;
+}
+
+.top-content {
+  display: flex;
+}
+
+.top-content h2 {
+  margin-left: 32px;
 }
 
 .back {
@@ -12,6 +22,7 @@
   font-weight: bold;
   background-color: #7159c1;
   color: #fff;
+  cursor: pointer;
 }
 
 .container .player {
@@ -19,7 +30,26 @@
   height: auto;
   background-color: rgba(104, 101, 101, 0.082);
   padding: 2px;
-  margin: 24px 0 16px;
+  margin: 16px 0 16px;
+}
+
+.container .additional-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .additional-controls > * {
+  width: 33%;
+  height: 52px;
+  margin: 4px;
+}
+
+.container .additional-controls select {
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+  padding-left: 8px;
 }
 
 .container .additional-controls button {

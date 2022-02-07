@@ -6,20 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/global.css" />
     <link rel="stylesheet" href="./css/anime.css" />
+    <script
+      src="https://kit.fontawesome.com/137131e49f.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
     <title>Anime</title>
   </head>
   <body>
     <div class="container">
-      <button class="back" onclick="document.location.href = '/';"><</button>
-      <h2 class="anime-name"></h2>
-      <video class="player" controls autoplay>
+      <div class="top-content">
+        <button class="back" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2 class="anime-name"></h2>
+      </div>
+      <video class="player" controls>
         <source />
         Your browser does not support the video tag.
       </video>
       <div class="additional-controls">
-        <button onclick="onNextOrPrevEp('prev')">Anterior</button>
+        <button onclick="onNextOrPrevEp('prev')">
+          <i class="fas fa-arrow-left"></i> Anterior
+        </button>
         <select name="eps" id="eps" onchange="onSelectChange()"></select>
-        <button onclick="onNextOrPrevEp('next')">Proximo</button>
+        <button onclick="onNextOrPrevEp('next')">
+          Proxímo <i class="fas fa-arrow-right"></i>
+        </button>
       </div>
     </div>
     <script src="./js/data.js"></script>
