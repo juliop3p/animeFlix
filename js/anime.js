@@ -98,7 +98,6 @@ const saveCurrentStatus = () => {
   anime.state.currentTime = player.currentTime;
   data[index] = anime;
   saveDataInLocalStorage();
-  document.location.href = "/";
 };
 
 const goBack = () => {
