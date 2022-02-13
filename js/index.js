@@ -65,7 +65,7 @@ const createUser = () => {
     username.length < 10
   ) {
     console.info("[INFO] - CRIANDO USUÁRIO");
-    fetch(`https://apianimes.herokuapp.com/api/User?username=${username}`, {
+    fetch(`https://localhost:5001/api/User?username=${username}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     }).then((res) => {

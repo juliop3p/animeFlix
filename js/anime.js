@@ -124,22 +124,30 @@ const saveDataInLocalStorage = () => {
 const updateAnimeStateOnServer = () => {
   const user = localStorage.getItem("user");
 
-  const body = {
-    userName: user,
-    state: anime.state,
-  };
+  if (
+    typeof username === "string" &&
+    username.length > 2 &&
+    username.length < 10
+  ) {
+    const body = {
+      userName: user,
+      state: anime.state,
+    };
 
-  fetch(`https://apianimes.herokuapp.com/api/State`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  }).then((res) => {
-    if (res.status === 200) {
-      return console.info("[INFO] - SESSION SAVED");
-    }
+    fetch(`https://localhost:5001/api/State`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((res) => {
+      if (res.status === 200) {
+        return console.info("[INFO] - SESSION SAVED");
+      }
 
-    console.error("[INFO] - COULDN'T SAVE SESSION");
-  });
+      console.error("[INFO] - COULDN'T SAVE SESSION");
+    });
+  } else {
+    localStorage.removeItem("user");
+  }
 };
 
 const onInitAnime = () => {
