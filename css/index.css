@@ -1,3 +1,22 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background-color: rgba(27, 26, 26, 0.514);
+}
+
+.header select {
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.container-cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+
 .container-cards .animes {
   display: flex;
   align-items: center;
@@ -11,6 +30,7 @@
   height: 150px;
   margin: 8px 8px;
   list-style: none;
+  position: relative;
 }
 
 .container-cards .animes .anime img {
@@ -18,4 +38,31 @@
   height: 150px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+.ep-details {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
+  padding: 2px;
+}
+
+.container-percentage {
+  width: 100%;
+  height: 4px;
+  background-color: #333;
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.percentage {
+  background-color: #df0708;
+  height: 100%;
 }
