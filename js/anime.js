@@ -150,7 +150,7 @@ const onInitAnime = () => {
   animes = getDataFromLocalStorage();
   validateQueryParam();
 
-  id = searchParams.get("id");
+  id = Number(searchParams.get("id"));
 
   index = animes.findIndex((x) => x.id === id);
   anime = animes[index];

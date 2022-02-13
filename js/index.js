@@ -55,7 +55,9 @@ const populateSelectWithUsers = () => {
 const onSelectChange = () => {
   user = selectUser.value;
   localStorage.clear();
-  localStorage.setItem("user", user);
+  if (typeof user === "string" && user.length > 2) {
+    localStorage.setItem("user", user);
+  }
   location.reload();
 };
 
