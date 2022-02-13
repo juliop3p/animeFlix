@@ -8,6 +8,7 @@ let index;
 let anime;
 let url;
 let currentEp;
+let animes;
 
 const urlBuilder = (anime) => {
   const { url, videoType, state } = anime;
@@ -71,8 +72,9 @@ const onEpChange = (ep) => {
   setAnime();
   setName();
   updateSelect();
-  data[index] = anime;
+  animes[index] = anime;
   saveDataInLocalStorage();
+  updateAnimeStateOnServer();
 };
 
 const onSelectChange = () => {
@@ -96,11 +98,13 @@ const onNextOrPrevEp = (action) => {
 const saveCurrentStatus = () => {
   console.log("SAVING CURRENT VIDEO TIME");
   anime.state.currentTime = player.currentTime;
-  data[index] = anime;
+  animes[index] = anime;
   saveDataInLocalStorage();
 };
 
 const goBack = () => {
+  animes[index] = anime;
+  updateAnimeStateOnServer();
   saveCurrentStatus();
   document.location.href = "/";
 };
@@ -109,12 +113,45 @@ player.addEventListener("ended", () => {
   onNextOrPrevEp("next");
 });
 
+const getDataFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem("animes"));
+};
+
+const saveDataInLocalStorage = () => {
+  localStorage.setItem("animes", JSON.stringify(animes));
+};
+
+const updateAnimeStateOnServer = () => {
+  const user = localStorage.getItem("user");
+
+  const body = {
+    userName: user,
+    state: anime.state,
+  };
+
+  fetch(`http://3.144.181.62/api/State`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  }).then((res) => {
+    if (res.status === 200) {
+      return console.info("[INFO] - SESSION SAVED");
+    }
+
+    console.error("[INFO] - COULDN'T SAVE SESSION");
+  });
+};
+
 const onInitAnime = () => {
+  animes = getDataFromLocalStorage();
   validateQueryParam();
 
   id = searchParams.get("id");
-  index = data.findIndex((x) => x.id === id);
-  anime = data[index];
+
+  index = animes.findIndex((x) => x.id === id);
+  anime = animes[index];
+
+  if (!anime) document.location.href = "/";
 
   setAnime();
   setName();

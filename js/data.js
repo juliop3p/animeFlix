@@ -1,58 +1,91 @@
-let data = [
-  {
-    id: "01",
-    name: "One Piece",
-    url: "https://pitou.goyabu.com/one-piece/",
-    videoType: "mp4",
-    image: "https://sm.ign.com/ign_br/tv/o/one-piece-/one-piece-2_1xby.jpg",
-    state: {
-      currentEp: "01",
-      currentTime: 00,
-    },
-  },
-  {
-    id: "02",
-    name: "Naruto Shippuden",
-    url: "https://pitou.goyabu.com/naruto-shippuden/",
-    videoType: "mp4",
-    image:
-      "https://i.pinimg.com/originals/14/dd/71/14dd71fc80364fb1b3721967cc652669.jpg",
-    state: {
-      currentEp: "01",
-      currentTime: 00,
-    },
-  },
-  {
-    id: "03",
-    name: "One Punch Man",
-    url: "https://pitou.goyabu.com/one-punch-man/",
-    videoType: "mp4",
-    image: "https://tm.ibxk.com.br/2022/01/17/17122119315209.jpg?ims=1200x675",
-    state: {
-      currentEp: "01",
-      currentTime: 00,
-    },
-  },
-  {
-    id: "04",
-    name: "Death Note",
-    url: "https://pitou.goyabu.com/death-note/",
-    videoType: "mp4",
-    image:
-      "https://oxentesensei.com.br/wp-content/uploads/2021/06/Death-Note-terminou-capa.jpg",
-    state: {
-      currentEp: "01",
-      currentTime: 00,
-    },
-  },
-];
+let animesFromLocalStorage;
+let statesFromServer;
+let usersFromServer;
+let currentUser = "";
+let animes;
 
-const getDataFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("data"));
+const getInitialDataFromServer = (getUserState) => {
+  const requests = [
+    fetch("http://3.144.181.62/api/User"),
+    fetch("http://3.144.181.62/api/Anime"),
+  ];
+
+  if (getUserState) {
+    requests.push(fetch(`http://3.144.181.62/api/User/${currentUser}`));
+  }
+
+  console.info("[INFO] - GETTING INITIAL DATAS");
+
+  Promise.all(requests)
+    .then((responses) =>
+      Promise.all(responses.map((response) => response.json()))
+    )
+    .then((data) => handleReturns(data));
 };
 
-const saveDataInLocalStorage = () => {
-  localStorage.setItem("data", JSON.stringify(data));
+const handleReturns = (data) => {
+  // Handling Users
+  if (data[0]) usersFromServer = data[0];
+
+  // Handling Animes
+  if (data[1]) animesFromServer = data[1];
+
+  // Handling States
+  if (data[2]) statesFromServer = data[2];
+
+  if (data[1]) {
+    addStateToData();
+
+    saveDataInLocalStorage(animesFromServer);
+
+    onInitIndex();
+  }
+};
+
+const isUserLogged = () => currentUser !== "" && currentUser !== null;
+
+const saveDataInLocalStorage = (data) => {
+  if (animesFromLocalStorage && isUserLogged()) {
+    animes = mergeObjects(data, animesFromLocalStorage);
+    localStorage.setItem("animes", JSON.stringify(animes));
+  } else if (animesFromLocalStorage && !isUserLogged()) {
+    animes = mergeObjects(data, animesFromLocalStorage);
+    localStorage.setItem("animes", JSON.stringify(animes));
+  } else {
+    animes = data;
+    localStorage.setItem("animes", JSON.stringify(animes));
+  }
+};
+
+const addStateToData = () => {
+  animesFromServer.forEach((anime) => {
+    if (statesFromServer) {
+      const state = statesFromServer.states.find(
+        (state) => anime.id === state.animeId
+      );
+
+      if (state) {
+        anime.state = {
+          id: state.id,
+          animeId: state.animeId,
+          currentEp: state.currentEp,
+          currentTime: state.currentTime,
+        };
+      } else {
+        anime.state = {
+          animeId: anime.id,
+          currentEp: "01",
+          currentTime: 00,
+        };
+      }
+    } else {
+      anime.state = {
+        animeId: anime.id,
+        currentEp: "01",
+        currentTime: 00,
+      };
+    }
+  });
 };
 
 const mergeObjects = (object, objectLocalStorage) => {
@@ -63,7 +96,9 @@ const mergeObjects = (object, objectLocalStorage) => {
       return obj;
     }
 
-    const animeLocalStorage = objectLocalStorage[index];
+    const animesLocalStorage = objectLocalStorage[index];
+
+    if (obj?.state?.id) return obj;
 
     return {
       id: obj.id,
@@ -72,8 +107,8 @@ const mergeObjects = (object, objectLocalStorage) => {
       videoType: obj.videoType,
       image: obj.image,
       state: {
-        currentEp: animeLocalStorage.state.currentEp,
-        currentTime: animeLocalStorage.state.currentTime,
+        currentEp: animesLocalStorage.state.currentEp,
+        currentTime: animesLocalStorage.state.currentTime,
       },
     };
   });
@@ -81,12 +116,11 @@ const mergeObjects = (object, objectLocalStorage) => {
   return newObject;
 };
 
-const onInit = () => {
-  const dataFromLocalStorage = getDataFromLocalStorage();
+const onInit = async () => {
+  currentUser = localStorage.getItem("user");
+  animesFromLocalStorage = JSON.parse(localStorage.getItem("data"));
 
-  if (dataFromLocalStorage) {
-    data = mergeObjects(data, dataFromLocalStorage);
-  }
+  getInitialDataFromServer(currentUser !== "" && currentUser !== null);
 };
 
 onInit();
