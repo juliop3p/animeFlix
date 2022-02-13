@@ -28,7 +28,13 @@ const getInitialDataFromServer = (getUserState) => {
     .then((responses) =>
       Promise.all(responses.map((response) => response.json()))
     )
-    .then((data) => handleReturns(data));
+    .then((data) => handleReturns(data))
+    .catch((err) => {
+      if (localStorage.getItem("animes") || localStorage.getItem("user")) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
 };
 
 const handleReturns = (data) => {
