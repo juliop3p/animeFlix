@@ -5,19 +5,21 @@ let usersFromServer;
 let currentUser = "";
 let animes;
 
-// https://localhost:5001
+// https://apianimes.herokuapp.com
 
 const getInitialDataFromServer = (getUserState) => {
   message.innerHTML =
     "Loading... <br><br> Calma pequeno gafanhoto o server é free xD";
 
   const requests = [
-    fetch("https://localhost:5001/api/User"),
-    fetch("https://localhost:5001/api/Anime"),
+    fetch("https://apianimes.herokuapp.com/api/User"),
+    fetch("https://apianimes.herokuapp.com/api/Anime"),
   ];
 
   if (getUserState) {
-    requests.push(fetch(`https://localhost:5001/api/User/${currentUser}`));
+    requests.push(
+      fetch(`https://apianimes.herokuapp.com/api/User/${currentUser}`)
+    );
   }
 
   console.info("[INFO] - GETTING INITIAL DATAS");

@@ -130,7 +130,7 @@ const updateAnimeStateOnServer = () => {
       state: anime.state,
     };
 
-    fetch(`https://localhost:5001/api/State`, {
+    fetch(`https://apianimes.herokuapp.com/api/State`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
