@@ -124,11 +124,7 @@ const saveDataInLocalStorage = () => {
 const updateAnimeStateOnServer = () => {
   const user = localStorage.getItem("user");
 
-  if (
-    typeof username === "string" &&
-    username.length > 2 &&
-    username.length < 10
-  ) {
+  if (typeof user === "string" && user.length > 2 && user.length < 10) {
     const body = {
       userName: user,
       state: anime.state,
