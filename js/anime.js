@@ -2,6 +2,9 @@ const player = document.querySelector(".player");
 const selectEp = document.getElementById("eps");
 const animeName = document.querySelector(".anime-name");
 const searchParams = new URLSearchParams(window.location.search);
+const controls = document.querySelector(".controls");
+let isPlaying = false; //Alterar
+let mousePosition;
 
 let id;
 let index;
@@ -44,7 +47,7 @@ const setAnime = () => {
 };
 
 const setName = () => {
-  animeName.innerHTML = `${anime.name} - ${anime.state.currentEp}`;
+  animeName.innerHTML = `${anime.state.currentEp} "${anime.name}"`;
 };
 
 const populateSelect = () => {
@@ -119,6 +122,7 @@ const getDataFromLocalStorage = () => {
 
 const saveDataInLocalStorage = () => {
   localStorage.setItem("animes", JSON.stringify(animes));
+  localStorage.setItem("lastUpdate", new Date());
 };
 
 const updateAnimeStateOnServer = () => {
@@ -146,7 +150,46 @@ const updateAnimeStateOnServer = () => {
   }
 };
 
+const checkForUpdates = () => {
+  const lastUpdateLocalStorage = localStorage.getItem("lastUpdate");
+
+  if (lastUpdateLocalStorage === "" || lastUpdateLocalStorage === null) return;
+
+  const lastUpdate = new Date(lastUpdateLocalStorage);
+  const currentMoment = new Date();
+  const lastUpdatePlusOneHour = lastUpdate.setHours(lastUpdate.getHours() + 1);
+
+  if (lastUpdatePlusOneHour < currentMoment) {
+    localStorage.removeItem("lastUpdate");
+    document.location.href = "/";
+  }
+};
+
+const showAndHideControls = () => {
+  controls.style.display = "grid";
+
+  const timer = setInterval(function () {
+    controls.style.display = "none";
+    clearInterval(timer);
+  }, 2000);
+};
+
+const playOrStopVideo = () => {
+  if (isPlaying) {
+    document.querySelector(".fa-play").style.display = "block";
+    document.querySelector(".fa-stop").style.display = "none";
+    isPlaying = false;
+    player.pause();
+  } else {
+    document.querySelector(".fa-play").style.display = "none";
+    document.querySelector(".fa-stop").style.display = "block";
+    isPlaying = true;
+    player.play();
+  }
+};
+
 const onInitAnime = () => {
+  checkForUpdates();
   animes = getDataFromLocalStorage();
   validateQueryParam();
 
@@ -166,5 +209,8 @@ const onInitAnime = () => {
     saveCurrentStatus();
   }, 60000);
 };
+
+player.addEventListener("mousemove", () => showAndHideControls());
+player.addEventListener("click", () => showAndHideControls());
 
 onInitAnime();
