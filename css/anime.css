@@ -54,9 +54,8 @@ body {
   cursor: pointer;
 }
 
-.middle-controls .fa-stop {
+.middle-controls .fa-play {
   display: none;
-  /* alterar */
 }
 
 .bottom-controls {

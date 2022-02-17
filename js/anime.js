@@ -3,7 +3,7 @@ const selectEp = document.getElementById("eps");
 const animeName = document.querySelector(".anime-name");
 const searchParams = new URLSearchParams(window.location.search);
 const controls = document.querySelector(".controls");
-let isPlaying = false; //Alterar
+let isPlaying = true;
 let mousePosition;
 
 let id;
