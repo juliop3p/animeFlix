@@ -19,6 +19,14 @@ const urlBuilder = (anime) => {
   return `${url}${sanitazeEp(state.currentEp)}.${videoType}`;
 };
 
+function prettyTime(t) {
+  let minutes = Math.floor(t / 60);
+  if (minutes < 10) minutes = "0" + minutes;
+  let seconds = Math.floor(t % 60);
+  if (seconds < 10) seconds = "0" + seconds;
+  return `${minutes}:${seconds}`;
+}
+
 const sanitazeEp = (ep) => {
   let sanatizedEp;
   if (typeof ep === "number") {
@@ -187,6 +195,18 @@ const playOrStopVideo = () => {
     player.play();
   }
 };
+
+setInterval(() => {
+  if (isPlaying) {
+    const progress = document.querySelector(".percentage");
+    const time = document.querySelector(".current-time");
+    const duration = player.duration;
+    const currentTime = player.currentTime;
+    const percent = (currentTime / duration) * 100;
+    time.innerText = prettyTime(currentTime || 00);
+    progress.style.width = `${percent}%`;
+  }
+}, 1000);
 
 const onInitAnime = () => {
   checkForUpdates();
