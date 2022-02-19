@@ -3,7 +3,9 @@ const selectEp = document.getElementById("eps");
 const animeName = document.querySelector(".anime-name");
 const searchParams = new URLSearchParams(window.location.search);
 const controls = document.querySelector(".controls");
+const percentage = document.querySelector(".percentage");
 let isPlaying = true;
+let isSelectingEp = false;
 let mousePosition;
 
 let id;
@@ -12,6 +14,7 @@ let anime;
 let url;
 let currentEp;
 let animes;
+let timer;
 
 const urlBuilder = (anime) => {
   const { url, videoType, state } = anime;
@@ -176,10 +179,15 @@ const checkForUpdates = () => {
 const showAndHideControls = () => {
   controls.style.display = "grid";
 
-  const timer = setInterval(function () {
-    controls.style.display = "none";
-    clearInterval(timer);
+  clearInterval(timer);
+  timer = setTimeout(function () {
+    if (!isSelectingEp) controls.style.display = "none";
   }, 2000);
+};
+
+const showControls = () => {
+  isSelectingEp = !isSelectingEp;
+  controls.style.display = "grid";
 };
 
 const playOrStopVideo = () => {
@@ -196,6 +204,18 @@ const playOrStopVideo = () => {
   }
 };
 
+const changePlayerTime = () => {
+  const newTime = percentage.value;
+  player.currentTime = (newTime * player.duration) / 100;
+  console.log((newTime * player.duration) / 100);
+};
+
+selectEp.addEventListener("click", () => showControls());
+window.addEventListener("mousemove", () => showAndHideControls());
+window.addEventListener("click", () => (isSelectingEp = !isSelectingEp));
+player.addEventListener("click", () => showAndHideControls());
+percentage.addEventListener("change", () => changePlayerTime());
+
 setInterval(() => {
   if (isPlaying) {
     const progress = document.querySelector(".percentage");
@@ -204,7 +224,7 @@ setInterval(() => {
     const currentTime = player.currentTime;
     const percent = (currentTime / duration) * 100;
     time.innerText = prettyTime(currentTime || 00);
-    progress.style.width = `${percent}%`;
+    progress.value = percent;
   }
 }, 1000);
 
@@ -229,8 +249,5 @@ const onInitAnime = () => {
     saveCurrentStatus();
   }, 60000);
 };
-
-player.addEventListener("mousemove", () => showAndHideControls());
-player.addEventListener("click", () => showAndHideControls());
 
 onInitAnime();
