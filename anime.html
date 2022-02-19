@@ -20,29 +20,48 @@
     <title>Anime</title>
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="container">
-        <div class="top-content">
-          <button class="back" onclick="goBack()">
-            <i class="fas fa-arrow-left"></i>
-          </button>
-          <h2 class="anime-name"></h2>
+    <video class="player" autoplay>
+      <source />
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="controls">
+      <div class="top-controls">
+        <i class="fas fa-arrow-left" onclick="goBack()"></i>
+        <div class="mid-text">
+          <p class="anime-name"></p>
         </div>
-        <video class="player" controls autoplay>
-          <source />
-          Your browser does not support the video tag.
-        </video>
-        <div class="additional-controls">
-          <button onclick="onNextOrPrevEp('prev')">
-            <i class="fas fa-arrow-left"></i> Anterior
+      </div>
+      <div class="middle-controls" onclick="playOrStopVideo()">
+        <i class="fas fa-solid fa-play"></i>
+        <i class="fas fa-stop"></i>
+      </div>
+      <div class="bottom-controls">
+        <div class="video-time">
+          <div class="current-time">00:00</div>
+          <div class="percentage-container">
+            <input type="range" class="percentage" ></input>
+          </div>
+        </div>
+        <div class="prev-next-controls">
+          <button
+            class="btn btn-primary pause"
+            onclick="onNextOrPrevEp('prev')"
+          >
+            <i class="fas fa-step-backward"></i> Ep. Ant.
           </button>
           <select name="eps" id="eps" onchange="onSelectChange()"></select>
-          <button onclick="onNextOrPrevEp('next')">
-            Proxímo <i class="fas fa-arrow-right"></i>
+          <button
+            class="btn btn-primary pause"
+            onclick="onNextOrPrevEp('next')"
+          >
+            Próx. ep.
+            <i class="fas fa-step-forward"></i>
           </button>
         </div>
       </div>
     </div>
+
     <script src="./js/anime.js"></script>
   </body>
 </html>

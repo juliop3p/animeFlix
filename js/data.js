@@ -1,17 +1,25 @@
+const message = document.querySelector(".message");
 let animesFromLocalStorage;
 let statesFromServer;
 let usersFromServer;
 let currentUser = "";
 let animes;
 
+// https://apianimes.herokuapp.com
+
 const getInitialDataFromServer = (getUserState) => {
+  message.innerHTML =
+    "Loading... <br><br> Calma pequeno gafanhoto o server é free xD";
+
   const requests = [
-    fetch("http://3.144.181.62/api/User"),
-    fetch("http://3.144.181.62/api/Anime"),
+    fetch("https://apianimes.herokuapp.com/api/User"),
+    fetch("https://apianimes.herokuapp.com/api/Anime"),
   ];
 
   if (getUserState) {
-    requests.push(fetch(`http://3.144.181.62/api/User/${currentUser}`));
+    requests.push(
+      fetch(`https://apianimes.herokuapp.com/api/User/${currentUser}`)
+    );
   }
 
   console.info("[INFO] - GETTING INITIAL DATAS");
@@ -20,10 +28,18 @@ const getInitialDataFromServer = (getUserState) => {
     .then((responses) =>
       Promise.all(responses.map((response) => response.json()))
     )
-    .then((data) => handleReturns(data));
+    .then((data) => handleReturns(data))
+    .catch((err) => {
+      if (localStorage.getItem("animes") || localStorage.getItem("user")) {
+        localStorage.clear();
+        location.reload();
+      }
+    });
 };
 
 const handleReturns = (data) => {
+  message.innerHTML = "";
+
   // Handling Users
   if (data[0]) usersFromServer = data[0];
 

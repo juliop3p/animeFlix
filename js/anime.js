@@ -2,6 +2,11 @@ const player = document.querySelector(".player");
 const selectEp = document.getElementById("eps");
 const animeName = document.querySelector(".anime-name");
 const searchParams = new URLSearchParams(window.location.search);
+const controls = document.querySelector(".controls");
+const percentage = document.querySelector(".percentage");
+let isPlaying = true;
+let isSelectingEp = false;
+let mousePosition;
 
 let id;
 let index;
@@ -9,12 +14,21 @@ let anime;
 let url;
 let currentEp;
 let animes;
+let timer;
 
 const urlBuilder = (anime) => {
   const { url, videoType, state } = anime;
 
   return `${url}${sanitazeEp(state.currentEp)}.${videoType}`;
 };
+
+function prettyTime(t) {
+  let minutes = Math.floor(t / 60);
+  if (minutes < 10) minutes = "0" + minutes;
+  let seconds = Math.floor(t % 60);
+  if (seconds < 10) seconds = "0" + seconds;
+  return `${minutes}:${seconds}`;
+}
 
 const sanitazeEp = (ep) => {
   let sanatizedEp;
@@ -44,7 +58,7 @@ const setAnime = () => {
 };
 
 const setName = () => {
-  animeName.innerHTML = `${anime.name} - ${anime.state.currentEp}`;
+  animeName.innerHTML = `${anime.state.currentEp} "${anime.name}"`;
 };
 
 const populateSelect = () => {
@@ -119,34 +133,107 @@ const getDataFromLocalStorage = () => {
 
 const saveDataInLocalStorage = () => {
   localStorage.setItem("animes", JSON.stringify(animes));
+  localStorage.setItem("lastUpdate", new Date());
 };
 
 const updateAnimeStateOnServer = () => {
   const user = localStorage.getItem("user");
 
-  const body = {
-    userName: user,
-    state: anime.state,
-  };
+  if (typeof user === "string" && user.length > 2 && user.length < 10) {
+    const body = {
+      userName: user,
+      state: anime.state,
+    };
 
-  fetch(`http://3.144.181.62/api/State`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  }).then((res) => {
-    if (res.status === 200) {
-      return console.info("[INFO] - SESSION SAVED");
-    }
+    fetch(`https://apianimes.herokuapp.com/api/State`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((res) => {
+      if (res.status === 200) {
+        return console.info("[INFO] - SESSION SAVED");
+      }
 
-    console.error("[INFO] - COULDN'T SAVE SESSION");
-  });
+      console.error("[INFO] - COULDN'T SAVE SESSION");
+    });
+  } else {
+    localStorage.removeItem("user");
+  }
 };
 
+const checkForUpdates = () => {
+  const lastUpdateLocalStorage = localStorage.getItem("lastUpdate");
+
+  if (lastUpdateLocalStorage === "" || lastUpdateLocalStorage === null) return;
+
+  const lastUpdate = new Date(lastUpdateLocalStorage);
+  const currentMoment = new Date();
+  const lastUpdatePlusOneHour = lastUpdate.setHours(lastUpdate.getHours() + 1);
+
+  if (lastUpdatePlusOneHour < currentMoment) {
+    localStorage.removeItem("lastUpdate");
+    document.location.href = "/";
+  }
+};
+
+const showAndHideControls = () => {
+  controls.style.display = "grid";
+
+  clearInterval(timer);
+  timer = setTimeout(function () {
+    if (!isSelectingEp) controls.style.display = "none";
+  }, 2000);
+};
+
+const showControls = () => {
+  isSelectingEp = !isSelectingEp;
+  controls.style.display = "grid";
+};
+
+const playOrStopVideo = () => {
+  if (isPlaying) {
+    document.querySelector(".fa-play").style.display = "block";
+    document.querySelector(".fa-stop").style.display = "none";
+    isPlaying = false;
+    player.pause();
+  } else {
+    document.querySelector(".fa-play").style.display = "none";
+    document.querySelector(".fa-stop").style.display = "block";
+    isPlaying = true;
+    player.play();
+  }
+};
+
+const changePlayerTime = () => {
+  const newTime = percentage.value;
+  player.currentTime = (newTime * player.duration) / 100;
+  console.log((newTime * player.duration) / 100);
+};
+
+selectEp.addEventListener("click", () => showControls());
+window.addEventListener("mousemove", () => showAndHideControls());
+window.addEventListener("click", () => (isSelectingEp = !isSelectingEp));
+player.addEventListener("click", () => showAndHideControls());
+percentage.addEventListener("change", () => changePlayerTime());
+
+setInterval(() => {
+  if (isPlaying) {
+    const progress = document.querySelector(".percentage");
+    const time = document.querySelector(".current-time");
+    const duration = player.duration;
+    const currentTime = player.currentTime;
+    const percent = (currentTime / duration) * 100;
+    time.innerText = prettyTime(currentTime || 00);
+    progress.value = percent;
+  }
+}, 1000);
+
 const onInitAnime = () => {
+  checkForUpdates();
   animes = getDataFromLocalStorage();
   validateQueryParam();
 
-  id = searchParams.get("id");
+  id = Number(searchParams.get("id"));
 
   index = animes.findIndex((x) => x.id === id);
   anime = animes[index];
