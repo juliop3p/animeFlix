@@ -212,7 +212,6 @@ const changePlayerTime = () => {
 
 selectEp.addEventListener("click", () => showControls());
 window.addEventListener("mousemove", () => showAndHideControls());
-window.addEventListener("click", () => (isSelectingEp = !isSelectingEp));
 player.addEventListener("click", () => showAndHideControls());
 percentage.addEventListener("change", () => changePlayerTime());
 
