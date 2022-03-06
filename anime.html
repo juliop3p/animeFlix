@@ -32,9 +32,21 @@
           <p class="anime-name"></p>
         </div>
       </div>
-      <div class="middle-controls" onclick="playOrStopVideo()">
-        <i class="fas fa-solid fa-play"></i>
-        <i class="fas fa-stop"></i>
+      <div class="middle-controls" >
+        <div class="left-control" onclick="skipVideoButton('left')">
+          <i class="fas fa-angle-left"></i>
+          &nbsp;
+          10
+        </div>
+        <div class="mid-control" onclick="playOrStopVideo()">
+          <i class="fas fa-solid fa-play"></i>
+          <i class="fas fa-stop"></i> 
+        </div>
+        <div class="right-control" onclick="skipVideoButton('right')">
+          10
+          &nbsp;
+          <i class="fas fa-angle-right"></i>
+        </div>
       </div>
       <div class="bottom-controls">
         <div class="video-time">

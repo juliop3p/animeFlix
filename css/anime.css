@@ -42,9 +42,8 @@ body {
 }
 
 .middle-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .middle-controls .fa-play,
@@ -52,6 +51,31 @@ body {
   color: #fff;
   font-size: 52px;
   cursor: pointer;
+}
+
+.left-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mid-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.right-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .middle-controls .fa-play {

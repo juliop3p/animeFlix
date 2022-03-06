@@ -7,6 +7,8 @@ const percentage = document.querySelector(".percentage");
 let isPlaying = true;
 let isSelectingEp = false;
 let mousePosition;
+let skipTime = 0;
+let counterToSaveState = 0;
 
 let id;
 let index;
@@ -114,6 +116,11 @@ const saveCurrentStatus = () => {
   anime.state.currentTime = player.currentTime;
   animes[index] = anime;
   saveDataInLocalStorage();
+
+  if (counterToSaveState > 5) {
+    counterToSaveState = 0;
+    updateAnimeStateOnServer();
+  }
 };
 
 const goBack = () => {
@@ -181,7 +188,10 @@ const showAndHideControls = () => {
 
   clearInterval(timer);
   timer = setTimeout(function () {
-    if (!isSelectingEp) controls.style.display = "none";
+    if (!isSelectingEp) {
+      controls.style.display = "none";
+      skipTime = 0;
+    }
   }, 2000);
 };
 
@@ -189,6 +199,16 @@ const showControls = () => {
   isSelectingEp = !isSelectingEp;
   controls.style.display = "grid";
 };
+
+document.addEventListener("keyup", (event) => {
+  if (event.code === "Space") {
+    playOrStopVideo();
+  } else if (event.code === "ArrowLeft") {
+    skipVideoButton("left");
+  } else if (event.code === "ArrowRight") {
+    skipVideoButton("right");
+  }
+});
 
 const playOrStopVideo = () => {
   if (isPlaying) {
@@ -207,7 +227,20 @@ const playOrStopVideo = () => {
 const changePlayerTime = () => {
   const newTime = percentage.value;
   player.currentTime = (newTime * player.duration) / 100;
-  console.log((newTime * player.duration) / 100);
+};
+
+const skipVideoButton = (skipType) => {
+  skipTime++;
+
+  if (skipType === "left") {
+    if (skipTime > 2) {
+      player.currentTime = player.currentTime - 10;
+    }
+  } else if (skipType === "right") {
+    if (skipTime > 2) {
+      player.currentTime = player.currentTime + 10;
+    }
+  }
 };
 
 selectEp.addEventListener("click", () => showControls());
@@ -225,7 +258,7 @@ setInterval(() => {
     time.innerText = prettyTime(currentTime || 00);
     progress.value = percent;
   }
-}, 1000);
+}, 300);
 
 const onInitAnime = () => {
   checkForUpdates();
@@ -245,6 +278,7 @@ const onInitAnime = () => {
   updateSelect();
 
   setInterval(() => {
+    counterToSaveState++;
     saveCurrentStatus();
   }, 60000);
 };
