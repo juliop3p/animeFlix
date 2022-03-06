@@ -117,7 +117,7 @@ const saveCurrentStatus = () => {
   animes[index] = anime;
   saveDataInLocalStorage();
 
-  if (counterToSaveState > 5) {
+  if (counterToSaveState === 5) {
     counterToSaveState = 0;
     updateAnimeStateOnServer();
   }
@@ -233,11 +233,11 @@ const skipVideoButton = (skipType) => {
   skipTime++;
 
   if (skipType === "left") {
-    if (skipTime > 2) {
+    if (skipTime >= 2) {
       player.currentTime = player.currentTime - 10;
     }
   } else if (skipType === "right") {
-    if (skipTime > 2) {
+    if (skipTime >= 2) {
       player.currentTime = player.currentTime + 10;
     }
   }
